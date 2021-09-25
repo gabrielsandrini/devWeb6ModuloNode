@@ -5,7 +5,7 @@ import cors from 'cors';
 
 import 'express-async-errors';
 
-import AppError from './errors/AppError';
+import AppError from './app/errors/AppError';
 import routes from './routes';
 
 import './database';
@@ -18,9 +18,11 @@ app.use(routes);
 
 app.use((err, request, response, _nextFunction) => {
   if (err instanceof AppError) {
-    return response
-      .status(err.statusCode)
-      .json({ status: 'error', message: err.message });
+    return response.status(err.statusCode).json({
+      status: 'error',
+      message: err.message,
+      code: err.statusCode,
+    });
   }
 
   console.error(err);

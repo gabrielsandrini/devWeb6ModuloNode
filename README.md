@@ -17,4 +17,13 @@ Application developed during the 6th semester of IFSP on the subject of Web deve
 
 - run `yarn start` to start the development server
 
-## Endpoints
+## Migrations
+
+- To create migrations:
+  `yarn sequelize migration:create --name=migration-name-here`
+
+- To run migrations:
+  `yarn sequelize db:migrate`
+
+- To undo migrations:
+  `yarn sequelize db:migrate:undo` or `yarn sequelize db:migrate:undo:all`
