@@ -1,19 +1,16 @@
 import { isBefore, subHours } from 'date-fns';
+import AppError from '../errors/AppError';
 
 import Appointment from '../models/Appointment';
 import User from '../models/User';
 
-import Queue from '../../lib/Queue';
-import CancellationMail from '../jobs/CancellationMail';
-import Cache from '../../lib/Cache';
-
 class CancelAppointmentService {
-  async run({ provider_id, user_id }) {
-    const appointment = await Appointment.findByPk(provider_id, {
+  async run({ doctor_id, user_id }) {
+    const appointment = await Appointment.findByPk(doctor_id, {
       include: [
         {
           model: User,
-          as: 'provider',
+          as: 'doctor',
           attributes: ['name', 'email'],
         },
         {
@@ -25,28 +22,23 @@ class CancelAppointmentService {
     });
 
     if (!appointment) {
-      throw new Error('Appointment not found');
+      throw new AppError('Appointment not found');
     }
 
     if (appointment.user_id !== user_id) {
-      throw new Error("You don't have permission to cancel this appointment");
+      throw new AppError(
+        "You don't have permission to cancel this appointment"
+      );
     }
 
     const dateWithSub = subHours(appointment.date, 2);
     if (isBefore(dateWithSub, new Date())) {
-      throw new Error('You can only cancel appointments 2 hours in advance');
+      throw new AppError('You can only cancel appointments 2 hours in advance');
     }
 
     appointment.canceled_at = new Date();
 
     await appointment.save();
-
-    await Queue.add(CancellationMail.key, { appointment });
-
-    /*
-     * Invalidate Cache
-     */
-    await Cache.invalidatePrefix(`user:${user_id}:appointments`);
 
     return appointment;
   }
