@@ -1,4 +1,5 @@
-import { Router } from 'express';
+import { Router, json } from 'express';
+import cors from 'cors';
 
 import SessionController from './app/controllers/SessionController';
 import UserController from './app/controllers/UserController';
@@ -8,8 +9,10 @@ import ScheduleController from './app/controllers/ScheduleController';
 
 import authMiddleware, { ensureIsAdmin } from './app/middlewares/auth';
 import { addIsDoctorQueryFlag } from './app/middlewares/parsers';
-
 const routes = new Router();
+
+routes.use(cors());
+routes.use(json());
 
 //Session
 routes.post('/login', SessionController.store);
