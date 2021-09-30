@@ -2,38 +2,36 @@ import { Router } from 'express';
 
 import SessionController from './app/controllers/SessionController';
 import UserController from './app/controllers/UserController';
-import DoctorController from './app/controllers/DoctorController';
 import AvailableController from './app/controllers/AvailableController';
 import AppointmentController from './app/controllers/AppointmentController';
 import ScheduleController from './app/controllers/ScheduleController';
 
-import authMiddleware from './app/middlewares/auth';
+import authMiddleware, { ensureIsAdmin } from './app/middlewares/auth';
+import { addIsDoctorQueryFlag } from './app/middlewares/parsers';
 
 const routes = new Router();
 
 //Session
 routes.post('/login', SessionController.store);
 
+routes.use(authMiddleware);
+
+routes.get('/doctors', addIsDoctorQueryFlag, UserController.index);
+routes.get('/schedule/:doctor_id?', ScheduleController.index);
+routes.get('/appointments/:user_id?', AppointmentController.index);
+
+routes.use(ensureIsAdmin);
+
 //Users
+routes.get('/users', UserController.index);
 routes.post('/users', UserController.store);
-routes.put('/users', authMiddleware, UserController.update);
+routes.put('/users/:user_id', UserController.update);
 
 //Doctors
-routes.get('/doctors', DoctorController.index);
 routes.get('/doctors/:doctor_id/available', AvailableController.index);
 
-routes.get('/appointments', authMiddleware, AppointmentController.index);
+routes.post('/appointments', AppointmentController.store);
 
-routes.post('/appointments', authMiddleware, AppointmentController.store);
-routes.delete(
-  '/appointments/:id',
-  authMiddleware,
-  AppointmentController.delete
-);
-
-routes.get('/schedule', ScheduleController.index);
-
-//Health check
-routes.get('/health', (req, res) => res.json({ health: true }));
+routes.delete('/appointments/:user_id', AppointmentController.delete);
 
 export default routes;

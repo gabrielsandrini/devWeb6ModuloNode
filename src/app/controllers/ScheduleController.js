@@ -5,8 +5,10 @@ import User from '../models/User';
 
 class ScheduleController {
   async index(req, res) {
+    const user_id = req.user.is_admin ? req.params.doctor_id : req.user.id;
+
     const checkUserDoctor = await User.findOne({
-      where: { id: req.userId, doctor_id: true },
+      where: { id: user_id, doctor_id: true },
     });
 
     if (!checkUserDoctor) {

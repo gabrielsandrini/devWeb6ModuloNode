@@ -6,10 +6,11 @@ import CancelAppointmentService from '../services/CancelAppointmentService';
 
 class AppointmentController {
   async index(req, res) {
+    const user_id = req.user.is_admin ? req.params.doctor_id : req.user.id;
     const { page = 1 } = req.query;
 
     const appointments = await Appointment.findAll({
-      where: { user_id: req.userId, canceled_at: null },
+      where: { user_id, canceled_at: null },
       order: ['date'],
       attributes: ['id', 'date', 'past', 'cancelable'],
       limit: 20,
@@ -27,11 +28,11 @@ class AppointmentController {
   }
 
   async store(req, res) {
-    const { doctor_id, date } = req.body;
+    const { user_id, doctor_id, date } = req.body;
 
     const appointment = await CreateAppointmentService.run({
       doctor_id,
-      user_id: req.userId,
+      user_id,
       date,
     });
 
@@ -39,9 +40,11 @@ class AppointmentController {
   }
 
   async delete(req, res) {
+    const { user_id, doctor_id } = req.params;
+
     const appointment = await CancelAppointmentService.run({
-      doctor_id: req.params.id,
-      user_id: req.userId,
+      doctor_id,
+      user_id,
     });
 
     return res.json(appointment);
