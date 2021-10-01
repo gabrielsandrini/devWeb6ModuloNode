@@ -11,7 +11,7 @@ Application developed during the 6th semester of IFSP on the subject of Web deve
 - Run the following commands:
   `docker run --name postgres -e POSTGRES_PASSWORD=123 -p 5432:5432 -d postgres`
 
-- duplicate the `.env.example` file in the project root folder and rename the duplicated one to `.env`]
+- duplicate the `.env.example` file in the project root folder and rename the duplicated one to `.env`
 
 - run `yarn` to install the projects dependencies
 
