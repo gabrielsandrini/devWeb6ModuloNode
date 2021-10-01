@@ -1,21 +1,27 @@
 import { Router, json } from 'express';
 import cors from 'cors';
 
+import authMiddleware, { ensureIsAdmin } from './app/middlewares/auth';
+import { addIsDoctorQueryFlag } from './app/middlewares/parsers';
+
+import validateUserStore from './app/validators/UserStore';
+import validateUserUpdate from './app/validators/UserUpdate';
+import validateSessionStore from './app/validators/SessionStore';
+import validateAppointmentStore from './app/validators/AppointmentStore';
+
 import SessionController from './app/controllers/SessionController';
 import UserController from './app/controllers/UserController';
 import AvailableController from './app/controllers/AvailableController';
 import AppointmentController from './app/controllers/AppointmentController';
 import ScheduleController from './app/controllers/ScheduleController';
 
-import authMiddleware, { ensureIsAdmin } from './app/middlewares/auth';
-import { addIsDoctorQueryFlag } from './app/middlewares/parsers';
 const routes = new Router();
 
 routes.use(cors());
 routes.use(json());
 
 //Session
-routes.post('/login', SessionController.store);
+routes.post('/login', validateSessionStore, SessionController.store);
 
 routes.use(authMiddleware);
 
@@ -27,13 +33,17 @@ routes.use(ensureIsAdmin);
 
 //Users
 routes.get('/users', UserController.index);
-routes.post('/users', UserController.store);
-routes.put('/users/:user_id', UserController.update);
+routes.post('/users', validateUserStore, UserController.store);
+routes.put('/users/:user_id', validateUserUpdate, UserController.update);
 
 //Doctors
 routes.get('/doctors/:doctor_id/available', AvailableController.index);
 
-routes.post('/appointments', AppointmentController.store);
+routes.post(
+  '/appointments',
+  validateAppointmentStore,
+  AppointmentController.store
+);
 
 routes.delete('/appointments/:user_id', AppointmentController.delete);
 
