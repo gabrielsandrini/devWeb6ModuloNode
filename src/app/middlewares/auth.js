@@ -16,13 +16,11 @@ export default async (req, res, next) => {
   try {
     const decoded = await promisify(jwt.verify)(token, authConfig.secret);
 
-    console.log('decoded', decoded);
     req.user = {};
     req.user.id = decoded.id;
-    req.is_doctor = decoded.is_doctor;
-    req.is_admin = decoded.is_admin;
+    req.user.is_doctor = decoded.is_doctor;
+    req.user.is_admin = decoded.is_admin;
 
-    console.log('aqui chega');
     return next();
   } catch (err) {
     console.error(err);
