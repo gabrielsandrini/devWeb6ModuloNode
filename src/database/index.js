@@ -12,7 +12,11 @@ class Database {
   }
 
   init() {
-    this.connection = new Sequelize(process.env.DATABASE_URL, DatabaseConfig);
+    console.log(process.env.DATABASE_URL);
+    this.connection = new Sequelize(
+      `${process.env.DATABASE_URL}`,
+      DatabaseConfig
+    );
 
     models
       .map((model) => model.init(this.connection))
