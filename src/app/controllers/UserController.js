@@ -20,6 +20,21 @@ class UserController {
     return res.json(users);
   }
 
+  async findOne(req, res) {
+    const { user_id: user_url_id } = req.params;
+
+    const user_id = req.user.is_admin ? user_url_id : req.user.id;
+
+    const user = await User.findOne({
+      where: { id: user_id },
+    });
+
+    user.password_hash = '';
+    delete user.password_hash;
+
+    return res.json(user);
+  }
+
   async store(req, res) {
     const userExists = await User.findOne({ where: { email: req.body.email } });
 

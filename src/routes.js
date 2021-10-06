@@ -25,6 +25,7 @@ routes.post('/login', validateSessionStore, SessionController.store);
 
 routes.use(authMiddleware);
 
+routes.get('/user/:user_id', UserController.findOne);
 routes.get('/doctors', addIsDoctorQueryFlag, UserController.index);
 routes.get('/schedule/:doctor_id?', ScheduleController.index);
 routes.get('/appointments/:user_id?', AppointmentController.index);
