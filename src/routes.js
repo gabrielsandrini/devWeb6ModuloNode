@@ -35,8 +35,8 @@ routes.use(ensureIsAdmin);
 //Users
 routes.get('/users', UserController.index);
 routes.post('/users', validateUserStore, UserController.store);
-routes.put('/users/:user_id', validateUserUpdate, UserController.update);
-routes.delete('/user/:user_id', UserController.delete);
+routes.put('/users/:user_id', UserController.update);
+routes.delete('/users/:user_id', UserController.delete);
 
 //Doctors
 routes.get('/doctors/:doctor_id/available', AvailableController.index);
