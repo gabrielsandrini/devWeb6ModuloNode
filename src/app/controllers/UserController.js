@@ -86,6 +86,22 @@ class UserController {
       is_admin,
     });
   }
+
+  async delete(req, res) {
+    const { user_id } = req.params;
+
+    const user = await User.findByPk(user_id);
+
+    if (!userExists) {
+      return res.status(400).json({ error: 'User does not exists' });
+    }
+
+    await user.destroy({ where: { id: user_id } });
+
+    return res.json({
+      id: user_id,
+    });
+  }
 }
 
 export default new UserController();
