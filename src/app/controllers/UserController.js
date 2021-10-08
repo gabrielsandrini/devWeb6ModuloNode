@@ -12,9 +12,16 @@ class UserController {
       Object.assign(filters, { is_doctor });
     }
 
+    if (typeof is_admin == 'undefined'){
+      Object.assign(filters, { is_admin : false});
+    }
+    if (typeof is_doctor == 'undefined'){
+      Object.assign(filters, { is_doctor : false});
+    }
+
     const users = await User.findAll({
       where: filters,
-      attributes: ['id', 'name', 'email'],
+      attributes: ['id', 'name', 'email' ],
     });
 
     return res.json(users);
