@@ -5,11 +5,11 @@ class UserController {
     const { is_admin, is_doctor } = req.query;
 
     const filters = {};
-    if (is_admin) {
-      Object.assign(filters, { is_admin: true });
+    if (typeof is_admin !== 'undefined' || is_admin !== null) {
+      Object.assign(filters, { is_admin });
     }
-    if (is_doctor) {
-      Object.assign(filters, { is_doctor: true });
+    if (typeof is_doctor !== 'undefined' || is_doctor !== null) {
+      Object.assign(filters, { is_doctor });
     }
 
     const users = await User.findAll({
