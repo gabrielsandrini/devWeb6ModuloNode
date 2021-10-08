@@ -6,11 +6,10 @@ import CancelAppointmentService from '../services/CancelAppointmentService';
 
 class AppointmentController {
   async index(req, res) {
-    const user_id = req.user.is_admin ? req.params.doctor_id : req.user.id;
     const { page = 1 } = req.query;
 
     const appointments = await Appointment.findAll({
-      where: { user_id, canceled_at: null },
+      where: {canceled_at: null },
       order: ['date'],
       attributes: ['id', 'date', 'past', 'cancelable'],
       limit: 20,
@@ -19,6 +18,11 @@ class AppointmentController {
         {
           model: User,
           as: 'doctor',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: User,
+          as: 'user',
           attributes: ['id', 'name'],
         },
       ],
