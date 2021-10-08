@@ -42,17 +42,12 @@ class UserController {
       return res.status(400).json({ error: 'User already exists' });
     }
 
-    const { id, name, email, is_doctor, is_admin } = await User.create(
-      req.body
-    );
+    const user = await User.create(req.body);
 
-    return res.json({
-      id,
-      name,
-      email,
-      is_doctor,
-      is_admin,
-    });
+    user.password_hash = '';
+    delete user.password_hash;
+
+    return res.json(user);
   }
 
   async update(req, res) {
@@ -77,14 +72,12 @@ class UserController {
 
     await user.update(req.body);
 
-    const { id, name, is_doctor, is_admin } = await User.findByPk(user_id);
-    return res.json({
-      id,
-      name,
-      email,
-      is_doctor,
-      is_admin,
-    });
+    const userUpdated = await User.findByPk(user_id);
+
+    user.password_hash = '';
+    delete user.password_hash;
+
+    return res.json(userUpdated);
   }
 
   async delete(req, res) {
