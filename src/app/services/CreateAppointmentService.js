@@ -30,7 +30,7 @@ class CreateAppointmentService {
     const hourStart = startOfHour(parseISO(date));
 
     if (isBefore(hourStart, new Date())) {
-      throw new AppError('Past dates are not permitted');
+      throw new AppError('Você não pode cadastrar com uma data anterior a hoje.');
     }
 
     /*
@@ -41,7 +41,7 @@ class CreateAppointmentService {
     });
 
     if (checkAvaliability) {
-      throw new AppError('Appointment date is not available');
+      throw new AppError('Data escolhida não está disponível.');
     }
 
     const appointment = await Appointment.create({
