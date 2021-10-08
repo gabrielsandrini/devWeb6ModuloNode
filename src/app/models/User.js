@@ -16,7 +16,6 @@ class User extends Model {
         crm: Sequelize.STRING,
         city: Sequelize.STRING,
         street: Sequelize.STRING,
-        
         house_number: Sequelize.STRING,
         complement: Sequelize.STRING,
         is_admin: Sequelize.BOOLEAN,
