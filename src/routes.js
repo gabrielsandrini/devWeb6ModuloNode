@@ -47,6 +47,6 @@ routes.post(
   AppointmentController.store
 );
 
-routes.delete('/appointments/:user_id', AppointmentController.delete);
+routes.delete('/appointments/:appointment_id', AppointmentController.delete);
 
 export default routes;

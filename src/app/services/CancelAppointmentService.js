@@ -5,35 +5,16 @@ import Appointment from '../models/Appointment';
 import User from '../models/User';
 
 class CancelAppointmentService {
-  async run({ doctor_id, user_id }) {
-    const appointment = await Appointment.findByPk(doctor_id, {
-      include: [
-        {
-          model: User,
-          as: 'doctor',
-          attributes: ['name', 'email'],
-        },
-        {
-          model: User,
-          as: 'user',
-          attributes: ['name'],
-        },
-      ],
-    });
+  async run({ appointment_id }) {
+    const appointment = await Appointment.findByPk(appointment_id);
 
     if (!appointment) {
-      throw new AppError('Appointment not found');
-    }
-
-    if (appointment.user_id !== user_id) {
-      throw new AppError(
-        "You don't have permission to cancel this appointment"
-      );
+      throw new AppError('Agendamento não encontrado.');
     }
 
     const dateWithSub = subHours(appointment.date, 2);
     if (isBefore(dateWithSub, new Date())) {
-      throw new AppError('You can only cancel appointments 2 hours in advance');
+      throw new AppError('Você só pode cancelar agendamentos com 2 horas de antecedência.');
     }
 
     appointment.canceled_at = new Date();
