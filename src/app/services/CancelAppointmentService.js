@@ -3,6 +3,7 @@ import AppError from '../errors/AppError';
 
 import Appointment from '../models/Appointment';
 import CancellationMail from '../jobs/CancellationMail';
+import User from '../models/User';
 
 class CancelAppointmentService {
   async run({ appointment_id }) {
@@ -23,9 +24,19 @@ class CancelAppointmentService {
 
     await appointment.save();
 
+    const user = await User.findOne({
+      where: { id: appointment.user_id },
+    });
+
+    const doctor = await User.findOne({
+      where: { id: appointment.doctor_id },
+    });
+
     await CancellationMail.handle({
       data: {
         appointment: appointment.dataValues,
+        user,
+        doctor,
       },
     });
 

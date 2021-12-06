@@ -11,8 +11,9 @@ class CreateAppointmentMail {
       subject: 'Agendamento criado',
       template: 'create_appointment',
       context: {
-        provider: doctor.name,
-        user: user.name,
+        receiver_name: doctor.name,
+        user_name: user.name,
+        doctor_name: doctor?.name ?? '',
         date: format(
           new Date(appointment.date),
           "'dia' dd 'de' MMMM', às' H:mm'h'",
@@ -28,8 +29,9 @@ class CreateAppointmentMail {
       subject: 'Agendamento criado',
       template: 'create_appointment',
       context: {
-        provider: doctor.name,
-        user: user.name,
+        receiver_name: user.name,
+        user_name: user.name,
+        doctor_name: doctor?.name ?? '',
         date: format(
           new Date(appointment.date),
           "'dia' dd 'de' MMMM', às' H:mm'h'",
