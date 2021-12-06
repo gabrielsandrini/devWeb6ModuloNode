@@ -1,15 +1,15 @@
-FROM node:16.13.1
+FROM node:13.8.0
 
-RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
-
-WORKDIR /home/node/app
-
+RUN apt-get update
+RUN apt-get install -y vim
+RUN echo "syntax on\ncolorscheme default" > ~/.vimrc
+RUN apt-get install python -y
+WORKDIR /usr/app
 COPY package*.json ./
-
 RUN npm install
 
 COPY . .
 
-EXPOSE 3333
+EXPOSE 3000
 
-CMD [ "npm", "run", "dev" ]
+CMD ["npm", "run", "dev"]
