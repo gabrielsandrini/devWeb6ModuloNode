@@ -3,6 +3,7 @@ import { startOfHour, parseISO, isBefore } from 'date-fns';
 import User from '../models/User';
 import Appointment from '../models/Appointment';
 import AppError from '../errors/AppError';
+import CancellationMail from '../jobs/CancellationMail';
 
 class CreateAppointmentService {
   async run({ doctor_id, user_id, date }) {
@@ -12,15 +13,23 @@ class CreateAppointmentService {
       );
     }
 
+    const user = await User.findOne({
+      where: { id: user_id },
+    });
+
+    if (!user) {
+      throw new AppError('User does not exists');
+    }
+
     /*
      Check if doctor_id is a doctor
     */
 
-    const isDoctor = await User.findOne({
+    const doctor = await User.findOne({
       where: { id: doctor_id, is_doctor: true },
     });
 
-    if (!isDoctor) {
+    if (!doctor) {
       throw new AppError('You can only create appointments with doctors');
     }
 
@@ -30,7 +39,9 @@ class CreateAppointmentService {
     const hourStart = startOfHour(parseISO(date));
 
     if (isBefore(hourStart, new Date())) {
-      throw new AppError('Você não pode cadastrar com uma data anterior a hoje.');
+      throw new AppError(
+        'Você não pode cadastrar com uma data anterior a hoje.'
+      );
     }
 
     /*
@@ -48,6 +59,14 @@ class CreateAppointmentService {
       user_id,
       doctor_id,
       date: hourStart,
+    });
+
+    await CancellationMail.handle({
+      data: {
+        appointment: appointment.dataValues,
+        user,
+        doctor,
+      },
     });
 
     return appointment;
