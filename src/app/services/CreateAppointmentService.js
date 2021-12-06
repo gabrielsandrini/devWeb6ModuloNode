@@ -3,7 +3,7 @@ import { startOfHour, parseISO, isBefore } from 'date-fns';
 import User from '../models/User';
 import Appointment from '../models/Appointment';
 import AppError from '../errors/AppError';
-import CancellationMail from '../jobs/CancellationMail';
+import CreateAppointmentMail from '../jobs/CreateAppointmentMail';
 
 class CreateAppointmentService {
   async run({ doctor_id, user_id, date }) {
@@ -61,7 +61,7 @@ class CreateAppointmentService {
       date: hourStart,
     });
 
-    await CancellationMail.handle({
+    await CreateAppointmentMail.handle({
       data: {
         appointment: appointment.dataValues,
         user,

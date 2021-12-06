@@ -2,7 +2,7 @@ import { isBefore, subHours } from 'date-fns';
 import AppError from '../errors/AppError';
 
 import Appointment from '../models/Appointment';
-import User from '../models/User';
+import CancellationMail from '../jobs/CancellationMail';
 
 class CancelAppointmentService {
   async run({ appointment_id }) {
@@ -14,12 +14,20 @@ class CancelAppointmentService {
 
     const dateWithSub = subHours(appointment.date, 2);
     if (isBefore(dateWithSub, new Date())) {
-      throw new AppError('Você só pode cancelar agendamentos com 2 horas de antecedência.');
+      throw new AppError(
+        'Você só pode cancelar agendamentos com 2 horas de antecedência.'
+      );
     }
 
     appointment.canceled_at = new Date();
 
     await appointment.save();
+
+    await CancellationMail.handle({
+      data: {
+        appointment: appointment.dataValues,
+      },
+    });
 
     return appointment;
   }
