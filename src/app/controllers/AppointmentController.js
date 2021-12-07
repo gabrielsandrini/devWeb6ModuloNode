@@ -9,7 +9,7 @@ class AppointmentController {
     const { page = 1 } = req.query;
 
     const appointments = await Appointment.findAll({
-      where: {canceled_at: null },
+      where: { canceled_at: null },
       order: ['date'],
       attributes: ['id', 'date', 'past', 'cancelable'],
       limit: 20,
@@ -47,7 +47,7 @@ class AppointmentController {
     const { appointment_id } = req.params;
 
     const appointment = await CancelAppointmentService.run({
-      appointment_id
+      appointment_id,
     });
 
     return res.json(appointment);

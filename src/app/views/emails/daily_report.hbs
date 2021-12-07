@@ -1,0 +1,12 @@
+<strong>Olá, {{ receiver_name }} </strong>
+<p>Confira os seus atendimentos de amanhã abaixo: </p>
+{{#each appointments}}
+<p>
+  <strong>Paciente: </strong> {{ this.user.dataValues.name }} <br />
+  <strong>Data/hora: </strong> {{ this.date }} <br />
+  <br />
+</p>
+<hr />
+{{else}}
+<p class="empty">Sem agendamentos</p>
+{{/each}}

@@ -14,6 +14,7 @@ import UserController from './app/controllers/UserController';
 import AvailableController from './app/controllers/AvailableController';
 import AppointmentController from './app/controllers/AppointmentController';
 import ScheduleController from './app/controllers/ScheduleController';
+import AppointmentReportController from './app/controllers/AppointmentReportController';
 
 const routes = new Router();
 
@@ -29,6 +30,7 @@ routes.get('/user/:user_id', UserController.findOne);
 routes.get('/doctors', addIsDoctorQueryFlag, UserController.index);
 routes.get('/schedule/:doctor_id?', ScheduleController.index);
 routes.get('/appointments', AppointmentController.index);
+routes.get('/appointments/report', AppointmentReportController.handle);
 
 routes.use(ensureIsAdmin);
 
