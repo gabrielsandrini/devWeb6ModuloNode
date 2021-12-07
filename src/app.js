@@ -8,6 +8,8 @@ import 'express-async-errors';
 import AppError from './app/errors/AppError';
 import routes from './routes';
 
+import './app/jobs/CronJob';
+
 import './database';
 
 const app = express();
